@@ -1,4 +1,4 @@
-const API="PASTE_SHEETDB_URL";
+const API="https://sheetdb.io/api/v1/vdgeb9tabl8jn";
 
 async function addReq(){
 
