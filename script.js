@@ -1,60 +1,41 @@
-const API="https://sheetdb.io/api/v1/vdgeb9tabl8jn";
+function addReq(){
 
-async function addReq(){
+const client = document.getElementById("client").value;
+const company = document.getElementById("company").value;
+const email = document.getElementById("email").value;
+const phone = document.getElementById("phone").value;
+const role = document.getElementById("role").value;
+const rate = document.getElementById("rate").value;
+const jd = document.getElementById("jd").value;
 
-const data={
-ClientName:client.value,
-Company:company.value,
-Email:email.value,
-Phone:phone.value,
-Role:role.value,
-JD:jd.value,
-Rate:rate.value,
-Status:"Open",
-LastUpdated:new Date().toISOString()
-};
-
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
-});
-
-load();
+if(!client || !company){
+alert("Enter Client + Company");
+return;
 }
 
-async function load(){
+const box = document.createElement("div");
+box.className = "card";
 
-const r=await fetch(API);
-const d=await r.json();
+box.innerHTML = `
+<b>${client}</b> – ${company}<br>
+Email: ${email}<br>
+Phone: ${phone}<br>
+Role: ${role}<br>
+Rate: ${rate}<br>
+JD: ${jd}<br>
 
-list.innerHTML="";
-
-d.forEach(x=>{
-list.innerHTML+=`
-<div class="card">
-<b>${x.ClientName}</b> – ${x.Role}<br>
 Status:
-<select onchange="update('${x.id}',this.value)">
+<select>
 <option>Open</option>
 <option>Submitted</option>
 <option>Interview</option>
 <option>Closed</option>
 </select>
-</div>
 `;
-});
+
+document.getElementById("list").prepend(box);
+
+// clear fields
+document.querySelectorAll("input,textarea").forEach(x=>x.value="");
+
 }
-
-async function update(id,status){
-
-await fetch(API+"/"+id,{
-method:"PATCH",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({Status:status,LastUpdated:new Date().toISOString()})
-});
-
-alert("Status Updated");
-}
-
-load();
