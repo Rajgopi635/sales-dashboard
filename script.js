@@ -1,55 +1,59 @@
+const client = document.getElementById("client");
+const company = document.getElementById("company");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+const role = document.getElementById("role");
+const rate = document.getElementById("rate");
+const jd = document.getElementById("jd");
+const list = document.getElementById("list");
+const stats = document.getElementById("stats");
+
 loadSaved();
 
 function addReq() {
 
-  const name = client.value;
-  const company = companyInput.value;
-  const email = emailInput.value;
-  const phone = phoneInput.value;
-  const role = roleInput.value;
-  const rate = rateInput.value;
-  const jd = jdInput.value;
+  if (!client.value || !company.value) {
+    alert("Client + Company required");
+    return;
+  }
 
-  if (!name || !company) return alert("Client + Company required");
-
-  const data = {
-    name, company, email, phone, role, rate, jd, status:"Open"
+  const lead = {
+    name: client.value,
+    company: company.value,
+    email: email.value,
+    phone: phone.value,
+    role: role.value,
+    rate: rate.value,
+    jd: jd.value,
+    status: "Open"
   };
 
-  const saved = JSON.parse(localStorage.getItem("leads") || "[]");
-  saved.push(data);
-  localStorage.setItem("leads", JSON.stringify(saved));
+  const leads = JSON.parse(localStorage.getItem("leads") || "[]");
+  leads.push(lead);
+  localStorage.setItem("leads", JSON.stringify(leads));
 
+  clearInputs();
   render();
-  document.querySelectorAll("input,textarea").forEach(x=>x.value="");
 }
 
-function render(){
-  list.innerHTML="";
+function render() {
 
-let open=0, submitted=0, interview=0, closed=0;
+  const leads = JSON.parse(localStorage.getItem("leads") || "[]");
 
-leads.forEach(l=>{
- if(l.status=="Open") open++;
- if(l.status=="Submitted") submitted++;
- if(l.status=="Interview") interview++;
- if(l.status=="Closed") closed++;
-});
+  list.innerHTML = "";
 
-stats.innerHTML = `
-<div class="card">Open: ${open}</div>
-<div class="card">Submitted: ${submitted}</div>
-<div class="card">Interview: ${interview}</div>
-<div class="card">Closed: ${closed}</div>
-`;
+  let open = 0, submitted = 0, interview = 0, closed = 0;
 
-  const leads = JSON.parse(localStorage.getItem("leads")||"[]");
+  leads.forEach((l, i) => {
 
-  leads.forEach((l,i)=>{
-    list.innerHTML+=`
+    if (l.status === "Open") open++;
+    if (l.status === "Submitted") submitted++;
+    if (l.status === "Interview") interview++;
+    if (l.status === "Closed") closed++;
+
+    list.innerHTML += `
       <div class="card">
         <h3>${l.role}</h3>
-
         <p><b>Client:</b> ${l.name}</p>
         <p><b>Company:</b> ${l.company}</p>
         <p><b>Email:</b> ${l.email}</p>
@@ -67,30 +71,39 @@ stats.innerHTML = `
       </div>
     `;
   });
+
+  stats.innerHTML = `
+    <div class="card">Open: ${open}</div>
+    <div class="card">Submitted: ${submitted}</div>
+    <div class="card">Interview: ${interview}</div>
+    <div class="card">Closed: ${closed}</div>
+  `;
 }
 
-function update(i,val){
- const d=JSON.parse(localStorage.getItem("leads"));
- d[i].status=val;
- localStorage.setItem("leads",JSON.stringify(d));
+function update(i, val) {
+  const leads = JSON.parse(localStorage.getItem("leads"));
+  leads[i].status = val;
+  localStorage.setItem("leads", JSON.stringify(leads));
+  render();
 }
 
-function del(i){
- const d=JSON.parse(localStorage.getItem("leads"));
- d.splice(i,1);
- localStorage.setItem("leads",JSON.stringify(d));
- render();
+function del(i) {
+  const leads = JSON.parse(localStorage.getItem("leads"));
+  leads.splice(i, 1);
+  localStorage.setItem("leads", JSON.stringify(leads));
+  render();
 }
 
-function loadSaved(){
- window.client=document.getElementById("client");
- window.companyInput=document.getElementById("company");
- window.emailInput=document.getElementById("email");
- window.phoneInput=document.getElementById("phone");
- window.roleInput=document.getElementById("role");
- window.rateInput=document.getElementById("rate");
- window.jdInput=document.getElementById("jd");
- window.list=document.getElementById("list");
+function clearInputs() {
+  client.value = "";
+  company.value = "";
+  email.value = "";
+  phone.value = "";
+  role.value = "";
+  rate.value = "";
+  jd.value = "";
+}
 
- render();
+function loadSaved() {
+  render();
 }
