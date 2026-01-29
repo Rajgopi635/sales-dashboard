@@ -26,6 +26,23 @@ function addReq() {
 
 function render(){
   list.innerHTML="";
+
+let open=0, submitted=0, interview=0, closed=0;
+
+leads.forEach(l=>{
+ if(l.status=="Open") open++;
+ if(l.status=="Submitted") submitted++;
+ if(l.status=="Interview") interview++;
+ if(l.status=="Closed") closed++;
+});
+
+stats.innerHTML = `
+<div class="card">Open: ${open}</div>
+<div class="card">Submitted: ${submitted}</div>
+<div class="card">Interview: ${interview}</div>
+<div class="card">Closed: ${closed}</div>
+`;
+
   const leads = JSON.parse(localStorage.getItem("leads")||"[]");
 
   leads.forEach((l,i)=>{
